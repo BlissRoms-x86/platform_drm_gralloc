@@ -27,12 +27,14 @@ freedreno_drivers := freedreno
 intel_drivers := i915 i965 i915g ilo
 radeon_drivers := r300g r600g
 nouveau_drivers := nouveau
+tegra_drivers := tegra
 
 valid_drivers := \
 	$(freedreno_drivers) \
 	$(intel_drivers) \
 	$(radeon_drivers) \
-	$(nouveau_drivers)
+	$(nouveau_drivers) \
+	$(tegra_drivers)
 
 # Assume other driver names are pipe drivers
 ifneq ($(filter-out $(valid_drivers), $(DRM_GPU_DRIVERS)),)
@@ -79,6 +81,12 @@ ifneq ($(filter $(radeon_drivers), $(DRM_GPU_DRIVERS)),)
 LOCAL_SRC_FILES += gralloc_drm_radeon.c
 LOCAL_CFLAGS += -DENABLE_RADEON
 LOCAL_SHARED_LIBRARIES += libdrm_radeon
+endif
+
+ifneq ($(filter $(tegra_drivers), $(DRM_GPU_DRIVERS)),)
+LOCAL_SRC_FILES += gralloc_drm_tegra.c
+LOCAL_CFLAGS += -DENABLE_TEGRA
+LOCAL_SHARED_LIBRARIES += libdrm_tegra
 endif
 
 ifneq ($(filter $(nouveau_drivers), $(DRM_GPU_DRIVERS)),)
