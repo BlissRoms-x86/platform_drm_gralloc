@@ -30,6 +30,7 @@
 #include <signal.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <poll.h>
 #include <math.h>
 #include "gralloc_drm.h"
@@ -720,7 +721,6 @@ static void drm_kms_init_features(struct gralloc_drm_t *drm)
 	}
 	else if (drm->swap_mode == DRM_SWAP_COPY) {
 		struct gralloc_drm_bo_t *front;
-		int stride;
 
 		/* create the real front buffer */
 		front = gralloc_drm_bo_create(drm,
@@ -886,8 +886,6 @@ static drmModeModeInfoPtr find_mode(drmModeConnectorPtr connector, int *bpp, drm
 	int bestfit = 0;
 
 	if (property_get("debug.drm.mode", value, NULL)) {
-		char *p = value, *end;
-
 		/* parse <xres>x<yres>[@<bpp>] */
 		if (sscanf(value, "%dx%d@%d", &xres, &yres, bpp) != 3) {
 			*bpp = 0;
@@ -900,7 +898,6 @@ static drmModeModeInfoPtr find_mode(drmModeConnectorPtr connector, int *bpp, drm
 					xres, yres, *bpp);
 		}
 	} else if (property_get("debug.drm.mode.force", value, NULL)) {
-		char *p = value, *end;
 		*bpp = 0;
 
 		/* parse <xres>x<yres>[@<refreshrate>] */
@@ -1190,7 +1187,6 @@ static int init_connectors(struct gralloc_drm_t *drm)
 static void *extcon_observer(void *data)
 {
 	char uevent_desc[2048];
-	drmModeConnectorPtr hdmi;
 	struct gralloc_drm_t *drm =
 		(struct gralloc_drm_t *) data;
 	struct uevent event;
