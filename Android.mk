@@ -1,4 +1,4 @@
-# Copyright (C) 2010 Chia-I Wu <olvaffe@gmail.com>
+
 # Copyright (C) 2010-2011 LunarG Inc.
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a
@@ -50,7 +50,7 @@ LOCAL_MODULE := libgralloc_drm
 LOCAL_MODULE_TAGS := optional
 LOCAL_VENDOR_MODULE := true
 
-LOCAL_CFLAGS := -std=c11 -Wno-unused-parameter
+LOCAL_CFLAGS := -DDMABUF -std=c11 -Wno-unused-parameter
 
 LOCAL_SRC_FILES := \
 	gralloc_drm.c \
@@ -83,21 +83,20 @@ LOCAL_CFLAGS += -DENABLE_RADEON
 LOCAL_SHARED_LIBRARIES += libdrm_radeon
 endif
 
-ifneq ($(filter $(tegra_drivers), $(DRM_GPU_DRIVERS)),)
-LOCAL_SRC_FILES += gralloc_drm_tegra.c
-LOCAL_CFLAGS += -DENABLE_TEGRA
-LOCAL_SHARED_LIBRARIES += libdrm_tegra
-endif
-
 ifneq ($(filter $(nouveau_drivers), $(DRM_GPU_DRIVERS)),)
 LOCAL_SRC_FILES += gralloc_drm_nouveau.c
 LOCAL_CFLAGS += -DENABLE_NOUVEAU
 LOCAL_SHARED_LIBRARIES += libdrm_nouveau
 endif
 
+ifneq ($(filter $(tegra_drivers), $(DRM_GPU_DRIVERS)),)
+LOCAL_SRC_FILES += gralloc_drm_tegra.c
+LOCAL_CFLAGS += -DENABLE_TEGRA
+LOCAL_SHARED_LIBRARIES += libdrm_tegra
+endif
 ifneq ($(filter pipe, $(DRM_GPU_DRIVERS)),)
 LOCAL_SRC_FILES += gralloc_drm_pipe.c
-LOCAL_CFLAGS += -DENABLE_PIPE
+LOCAL_CFLAGS += -DENABLE_PIPE -DHAVE_FUNC_ATTRIBUTE_UNUSED
 LOCAL_C_INCLUDES += \
 	external/mesa/include \
 	external/mesa/src \
