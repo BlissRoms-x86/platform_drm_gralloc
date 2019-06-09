@@ -85,10 +85,21 @@ init_drv_from_fd(int fd)
 			ALOGI_IF(drv, "create radeon for driver radeon");
 		} else
 #endif
+#ifdef ENABLE_TEGRA
+		if (!strcmp(version->name, "tegra")) {
+			drv = gralloc_drm_drv_create_for_tegra(fd);
+			ALOGI_IF(drv, "create tegra for driver tegra");
+		} else
+#endif
 #ifdef ENABLE_NOUVEAU
 		if (!strcmp(version->name, "nouveau")) {
+#ifdef ENABLE_TEGRA
+			drv = gralloc_drm_drv_create_for_tegra(fd);
+			ALOGI_IF(drv, "create tegra for driver tegra");
+#else
 			drv = gralloc_drm_drv_create_for_nouveau(fd);
 			ALOGI_IF(drv, "create nouveau for driver nouveau");
+#endif
 		} else
 #endif
 #ifdef ENABLE_PIPE
